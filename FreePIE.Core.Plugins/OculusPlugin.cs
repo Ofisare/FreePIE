@@ -56,34 +56,70 @@ namespace FreePIE.Core.Plugins
 
         private OculusVrData _data;
 
-        public OculusVr6Dof Head {get { return _data.Head; }}
+        public OculusVr6Dof Head 
+        {
+            get { return _data.Head; }
+        }
 
-        public OculusVr6Dof leftHand{get { return _data.LeftHand; }}
+        public OculusVr6Dof leftHand
+        {
+            get { return _data.LeftHand; }
+        }
 
-        public OculusVr6Dof rightHand{get { return _data.RightHand; }}
+        public OculusVr6Dof rightHand
+        {
+            get { return _data.RightHand; }
+        }
 
-        public float LTrigger{get { return _data.LTrigger; }}
+        public float LTrigger
+        {
+            get { return _data.LTrigger; }
+        }
 
-        public float RTrigger{get { return _data.RTrigger; }}
+        public float RTrigger
+        {
+            get { return _data.RTrigger; }
+        }
 
-        public float LGrip{get { return _data.LGrip; }}
+        public float LGrip
+        {
+            get { return _data.LGrip; }
+        }
 
-        public float RGrip{get { return _data.RGrip; }}
+        public float RGrip
+        {
+            get { return _data.RGrip; }
+        }
 
-        public Pointf Lstick{get { return _data.Lstick; }}
+        public Pointf Lstick
+        {
+            get { return _data.Lstick; }
+        }
 
-        public Pointf Rstick{get { return _data.Rstick; }}
+        public Pointf Rstick
+        {
+            get { return _data.Rstick; }
+        }
 
-        public ovrControllerType ControllerType{get { return (ovrControllerType) _data.ControllerType; }}
+        public ovrControllerType ControllerType
+        {
+            get { return (ovrControllerType) _data.ControllerType; }
+        }
 
         public ovrStatus StatusRightHand { get { return (ovrStatus) _data.StatusRightHand; } }
         public ovrStatus StatusLeftHand { get { return (ovrStatus) _data.StatusLeftHand; } }
         public ovrStatus StatusHead { get { return (ovrStatus) _data.StatusHead; } }
 
         public bool isHmdMounted { get { return _data.HmdMounted > 0; } }
-        public ovrTouchButton Buttons{get { return (ovrTouchButton) _data.Buttons; }}
+        public ovrTouchButton Buttons
+        {
+            get { return (ovrTouchButton) _data.Buttons; }
+        }
 
-        public ovrTouch Touches{get { return (ovrTouch) _data.Touches; }}
+        public ovrTouch Touches
+        {
+            get { return (ovrTouch) _data.Touches; }
+        }
     }
 
     [Global(Name = "oculusVR")]
@@ -96,12 +132,9 @@ namespace FreePIE.Core.Plugins
         public OculusVr6Dof rightHand{get { return plugin.rightHand; }}
 
         public bool isHmdMounted { get { return plugin.isHmdMounted; } }
-        public ovrStatus headStatus{get { return plugin.StatusHead; }}
-
-        public ovrStatus leftHandStatus{get { return plugin.StatusLeftHand; }}
-
-        public ovrStatus rightHandStatus{get { return plugin.StatusRightHand; }}
-
+        public ovrStatus headStatus => plugin.StatusHead;
+        public ovrStatus leftHandStatus => plugin.StatusLeftHand;
+        public ovrStatus rightHandStatus => plugin.StatusRightHand;
         public bool headIsTracking { get { return plugin.StatusHead == (ovrStatus.OrientationTracked | ovrStatus.PositionTracked);} }
         public bool leftHandIsTracking { get { return plugin.StatusLeftHand == (ovrStatus.OrientationTracked | ovrStatus.PositionTracked); } }
 
