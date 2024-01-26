@@ -13,6 +13,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,9 +107,9 @@
     <Compile Include="Midi\DataGlobal.cs" />
     <Compile Include="MouseKeyIO.cs" />
     <Compile Include="MousePlugin.cs" />
-    <Compile Include="OculusPlugin.cs" />
-    <Compile Include="OculusVR\Api.cs" />
-    <Compile Include="OculusVR\OculusVr6Dof.cs" />
+    <Compile Include="OpenVRPlugin.cs" />
+    <Compile Include="OpenVR\Api.cs" />
+    <Compile Include="OpenVR\OpenVr6Dof.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PPJoyPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -169,7 +171,6 @@
       <Name>FreePIE.Core.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Help\FreePIE.Core.Plugins.HydraPlugin.rtf" />
     <None Include="Help\FreePIE.Core.Plugins.AndroidPlugin.rtf" />

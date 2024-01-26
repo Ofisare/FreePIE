@@ -11,22 +11,22 @@ namespace FreePIE.Core.Plugins.OculusVR
         [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static int ovr_freepie_init();
         [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static int ovr_freepie_read(out OculusVrData output);
-        [DllImport("OVRFreePIE.dll")]
+        private extern static int ovr_freepie_read(out OpenVrData output);
+        [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static int ovr_freepie_destroy();
-        [DllImport("OVRFreePIE.dll")]
+        [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static int ovr_freepie_reset_orientation();
+        [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
+        private extern static int ovr_freepie_trigger_haptic_pulse(uint controllerIndex, uint axis, uint durationMicroSec);
 
         public static bool Init()
         {
             return ovr_freepie_init() == 0;
         }
 
-        public static OculusVrData Read()
+        public static void Read(out OpenVrData output)
         {
-            OculusVrData output;
             ovr_freepie_read(out output);
-            return output;
         }
 
         public static bool Dispose()
@@ -37,6 +37,11 @@ namespace FreePIE.Core.Plugins.OculusVR
         public static bool Center()
         {
             return ovr_freepie_reset_orientation() == 0;
+        }
+
+        public static void TriggerHapticPulse(uint controllerIndex, uint axis, uint durationMicroSec)
+        {
+            ovr_freepie_trigger_haptic_pulse(controllerIndex, axis, durationMicroSec);
         }
     }
 }
