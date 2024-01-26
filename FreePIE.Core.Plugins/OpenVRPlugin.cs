@@ -54,42 +54,39 @@ namespace FreePIE.Core.Plugins
             Api.Center();
         }
 
-        public void TriggerHapticPulse(uint controllerIndex, uint axis, uint durationMicroSec)
+        public void TriggerHapticPulse(uint controllerIndex, uint durationMicroSec, float frequency, float amplitude)
         {
-            Api.TriggerHapticPulse(controllerIndex, axis, durationMicroSec);
+            Api.TriggerHapticPulse(controllerIndex, durationMicroSec, frequency, amplitude);
         }
 
         private OpenVrData _data;
 
-        public OpenVr6Dof HeadPose { get { return _data.HeadPose; } }
+        public OpenVr6Dof HeadPose => _data.HeadPose;
+        public OpenVr6Dof LeftTouchPose => _data.LeftTouchPose;
+        public OpenVr6Dof RightTouchPose=> _data.RightTouchPose;
 
-        public OpenVr6Dof LeftTouchPose{ get { return _data.LeftTouchPose; } }
+        public float LeftTrigger => _data.LeftTrigger;
+        public float RightTrigger => _data.RightTrigger;
+        public float LeftGrip => _data.LeftGrip;
+        public float RightGrip => _data.RightGrip;
 
-        public OpenVr6Dof RightTouchPose{ get { return _data.RightTouchPose; } }
+        public Pointf LeftStick => _data.LeftStick;
+        public Pointf RightStick => _data.RightStick;
 
-        public float LeftTrigger{ get { return _data.LeftTrigger; } }
+        public float A => _data.A;
+        public float B => _data.B;
+        public float X => _data.X;
+        public float Y => _data.Y;
+        public float LThumb => _data.LThumb;
+        public float RThumb => _data.RThumb;
+        public float Menu => _data.Menu;
+        public float Home => _data.Home;
 
-        public float RightTrigger{ get { return _data.RightTrigger; } }
-
-        public float LeftGrip{ get { return _data.LeftGrip; } }
-
-        public float RightGrip{ get { return _data.RightGrip; } }
-
-        public Pointf LeftStick{ get { return _data.LeftStick; } }
-
-        public Pointf RightStick{ get { return _data.RightStick; } }
-
-        public OpenVrStatus RightTouchStatus { get { return (OpenVrStatus) _data.RightTouchStatus; } }
-        public OpenVrStatus LeftTouchStatus { get { return (OpenVrStatus) _data.LeftTouchStatus; } }
-        public OpenVrStatus HeadStatus { get { return (OpenVrStatus) _data.HeadStatus; } }
+        public uint RightTouchStatus => _data.RightTouchStatus;
+        public uint LeftTouchStatus => _data.LeftTouchStatus;
+        public uint HeadStatus => _data.HeadStatus;
 
         public bool IsHmdMounted { get { return _data.IsHmdMounted > 0; } }
-
-        public OpenVrButton LeftButtons { get { return (OpenVrButton) _data.LeftButtons; } }
-        public OpenVrButton LeftTouches { get { return (OpenVrButton) _data.LeftTouches; } }
-
-        public OpenVrButton RightButtons { get { return (OpenVrButton)_data.RightButtons; } }
-        public OpenVrButton RightTouches { get { return (OpenVrButton)_data.RightTouches; } }
     }
 
     [Global(Name = "openVR")]
@@ -97,72 +94,54 @@ namespace FreePIE.Core.Plugins
     {
         public OpenVRGlobal(OpenVRPlugin plugin) : base(plugin){}
 
-        public OpenVrButton leftButtons { get { return plugin.LeftButtons; } }
-        public OpenVrButton leftTouches { get { return plugin.LeftTouches; } }
-        
-        public OpenVrButton rightButtons { get { return plugin.RightButtons; } }
-        public OpenVrButton rightTouches { get { return plugin.RightTouches; } }
+        public OpenVr6Dof headPose => plugin.HeadPose;
+        public OpenVr6Dof leftTouchPose => plugin.LeftTouchPose;
+        public OpenVr6Dof rightTouchPose => plugin.RightTouchPose;
+                
+        public uint headStatus => plugin.HeadStatus;
+        public uint leftTouchStatus => plugin.LeftTouchStatus;
+        public uint rightTouchStatus => plugin.RightTouchStatus;
 
-        public OpenVr6Dof headPose { get { return plugin.HeadPose; } }
-        public OpenVr6Dof leftTouchPose{ get { return plugin.LeftTouchPose; } }
-        public OpenVr6Dof rightTouchPose{ get { return plugin.RightTouchPose; } }
+        public bool isMounted => plugin.IsHmdMounted;
+        public bool isHeadTracking => plugin.HeadStatus > 1;
+        public bool isLeftTouchTracking => plugin.LeftTouchStatus > 1;
+        public bool isRightTouchTracking => plugin.RightTouchStatus > 1;
 
-        
-        public OpenVrStatus headStatus { get { return plugin.HeadStatus; } }
-        public OpenVrStatus leftTouchStatus { get { return plugin.LeftTouchStatus; } }
-        public OpenVrStatus rightTouchStatus { get { return plugin.RightTouchStatus; } }
+        public float leftTrigger => plugin.LeftTrigger;
+        public float rightTrigger => plugin.RightTrigger;
 
-        public bool isMounted { get { return plugin.IsHmdMounted; } }
-        public bool isHeadTracking { get { return plugin.HeadStatus.IsTracking(); } }
-        public bool isLeftTouchTracking { get { return plugin.LeftTouchStatus.IsTracking(); } }
+        public float leftGrip => plugin.LeftGrip;
+        public float rightGrip => plugin.RightGrip;
 
-        public bool isRightTouchTracking { get { return plugin.RightTouchStatus.IsTracking(); } }
+        public Pointf leftStick => plugin.LeftStick;
+        public Pointf rightStick => plugin.RightStick;
 
-        #region Buttons
-        public bool a { get { return (plugin.RightButtons & OpenVrButton.A) > 0; } }
-        public bool b { get { return (plugin.RightButtons & OpenVrButton.B) > 0; } }
-        public bool x { get { return (plugin.LeftButtons & OpenVrButton.A) > 0; } }
-        public bool y { get { return (plugin.LeftButtons & OpenVrButton.B) > 0; } }
+        public bool a => plugin.A > 0.6;
+        public bool b => plugin.B > 0.6;
+        public bool x => plugin.X > 0.6;
+        public bool y => plugin.Y > 0.6;
+        public bool lThumb => plugin.LThumb > 0.6;
+        public bool rThumb => plugin.RThumb > 0.6;
+        public bool menu => plugin.Menu > 0.6;
+        public bool home => plugin.Home > 0.6;
 
-        public bool leftThumb { get { return (plugin.LeftButtons & OpenVrButton.System) > 0; } }
+        public bool touchingA => plugin.A > 0.1 && plugin.A < 0.6;
+        public bool touchingB => plugin.B > 0.1 && plugin.B < 0.6;
+        public bool touchingX => plugin.X > 0.1 && plugin.X < 0.6;
+        public bool touchingY => plugin.Y > 0.1 && plugin.Y < 0.6;
+        public bool touchingLThumb => plugin.LThumb > 0.1 && plugin.LThumb < 0.6;
+        public bool touchingRThumb => plugin.RThumb > 0.1 && plugin.RThumb < 0.6;
+        public bool touchingMenu => plugin.Menu > 0.1 && plugin.Menu < 0.6;
+        public bool touchingHome => plugin.Home > 0.1 && plugin.Home < 0.6;
 
-        public bool rightThumb { get { return (plugin.RightButtons & OpenVrButton.System) > 0; } }
-        
-        public float leftTrigger { get { return plugin.LeftTrigger; } }
-        public float rightTrigger { get { return plugin.RightTrigger; } }
-
-        public float leftGrip { get { return plugin.LeftGrip; } }
-        public float rightGrip { get { return plugin.RightGrip; } }
-
-        public float leftStickX { get { return plugin.LeftStick.x; } }
-        public float rightStickX { get { return plugin.RightStick.x; } }
-
-        public float leftStickY { get { return -plugin.LeftStick.y; } }
-        public float rightStickY{ get { return -plugin.RightStick.y; } }
-
-
-        public bool system { get { return (plugin.LeftButtons & OpenVrButton.System) > 0; } }
-        
-        public bool home { get { return (plugin.RightButtons & OpenVrButton.System) > 0; } }
-
-        #endregion //Buttons
-
-        #region Touches      
-
-        public bool touchingA { get { return (plugin.RightTouches & OpenVrButton.A) > 0; } }
-        public bool touchingB { get { return (plugin.RightTouches & OpenVrButton.B) > 0; } }
-        public bool touchingX { get { return (plugin.LeftTouches & OpenVrButton.A) > 0; } }
-        public bool touchingY { get { return (plugin.LeftTouches & OpenVrButton.B) > 0; } }
-        
-        #endregion // Touches
         public void center()
         {
             plugin.Center();
         }
 
-        public void triggerHapticPulse(uint controllerIndex, uint axis, uint durationMicroSec)
+        public void triggerHapticPulse(uint controllerIndex, uint durationMicroSec, float frequency, float amplitude)
         {
-            plugin.TriggerHapticPulse(controllerIndex, axis, durationMicroSec);
+            plugin.TriggerHapticPulse(controllerIndex, durationMicroSec, frequency, amplitude);
         }
     }
 }

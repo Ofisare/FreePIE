@@ -17,7 +17,7 @@ namespace FreePIE.Core.Plugins.OculusVR
         [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
         private extern static int ovr_freepie_reset_orientation();
         [DllImport("OVRFreePIE.dll", CallingConvention = CallingConvention.Cdecl)]
-        private extern static int ovr_freepie_trigger_haptic_pulse(uint controllerIndex, uint axis, uint durationMicroSec);
+        private extern static int ovr_freepie_trigger_haptic_pulse(uint controllerIndex, uint durationMicroSec, float frequency, float amplitude);
 
         public static bool Init()
         {
@@ -39,9 +39,9 @@ namespace FreePIE.Core.Plugins.OculusVR
             return ovr_freepie_reset_orientation() == 0;
         }
 
-        public static void TriggerHapticPulse(uint controllerIndex, uint axis, uint durationMicroSec)
+        public static void TriggerHapticPulse(uint controllerIndex, uint durationMicroSec, float frequency, float amplitude)
         {
-            ovr_freepie_trigger_haptic_pulse(controllerIndex, axis, durationMicroSec);
+            ovr_freepie_trigger_haptic_pulse(controllerIndex, durationMicroSec, frequency, amplitude);
         }
     }
 }
