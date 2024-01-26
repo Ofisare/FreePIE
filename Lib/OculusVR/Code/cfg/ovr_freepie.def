@@ -4,3 +4,4 @@ EXPORTS ovr_freepie_init
 		ovr_freepie_read
 		ovr_freepie_destroy
 		ovr_freepie_reset_orientation
+		ovr_freepie_trigger_haptic_pulse

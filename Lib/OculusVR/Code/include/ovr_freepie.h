@@ -1,13 +1,13 @@
 #ifndef OVR_FREEPIE_6DOF_H
 #define OVR_FREEPIE_6DOF_H
-#include <OVR_CAPI.h>
+
 
 typedef struct ovr_freepie_6dof
 {
-  float yaw, pitch, roll;
-  float yawDegrees, pitchDegrees, rollDegrees;
-  float x, y, z;
-  
+	float left[3];
+	float up[3];
+	float forward[3];
+	float position[3];
 } ovr_freepie_6dof;
 
 typedef struct ovr_freepie_data {
@@ -15,20 +15,23 @@ typedef struct ovr_freepie_data {
 	ovr_freepie_6dof head;
 	ovr_freepie_6dof leftHand;
 	ovr_freepie_6dof rightHand;
-	
-	unsigned int touches;
-	unsigned int buttons;
-	
+		
 	float LTrigger;
 	float RTrigger;
 
 	float LGrip;
 	float RGrip;
 
-	ovrVector2f         Lstick;
-	ovrVector2f         Rstick;
+	float Lstick[2];
+	float Rstick[2];
 
-	ovrControllerType   ControllerType;
+	unsigned int Ltouches;
+	unsigned int Lbuttons;
+	
+	unsigned int Rtouches;
+	unsigned int Rbuttons;
+
+	long long ControllerType;
 
 	unsigned int statusHead;
 	unsigned int statusLeftHand;
@@ -41,5 +44,6 @@ int ovr_freepie_init();
 int ovr_freepie_read(ovr_freepie_data *output);
 int ovr_freepie_destroy();
 int ovr_freepie_reset_orientation();
+int ovr_freepie_trigger_haptic_pulse(unsigned int controllerIndex, unsigned int axis, unsigned int durationMicroSec);
 
 #endif
