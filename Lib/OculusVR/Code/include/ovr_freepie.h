@@ -11,11 +11,11 @@ typedef struct ovr_freepie_6dof
 } ovr_freepie_6dof;
 
 typedef struct ovr_freepie_data {
-	
+
 	ovr_freepie_6dof head;
 	ovr_freepie_6dof leftHand;
 	ovr_freepie_6dof rightHand;
-		
+
 	float LTrigger;
 	float RTrigger;
 
@@ -25,13 +25,14 @@ typedef struct ovr_freepie_data {
 	float Lstick[2];
 	float Rstick[2];
 
-	unsigned int Ltouches;
-	unsigned int Lbuttons;
-	
-	unsigned int Rtouches;
-	unsigned int Rbuttons;
-
-	long long ControllerType;
+	float A;
+	float B;
+	float X;
+	float Y;
+	float LThumb;
+	float RThumb;
+	float Menu;
+	float Home;
 
 	unsigned int statusHead;
 	unsigned int statusLeftHand;
@@ -41,9 +42,9 @@ typedef struct ovr_freepie_data {
 } ovr_freepie_data;
 
 int ovr_freepie_init();
-int ovr_freepie_read(ovr_freepie_data *output);
+int ovr_freepie_read(ovr_freepie_data* output);
 int ovr_freepie_destroy();
 int ovr_freepie_reset_orientation();
-int ovr_freepie_trigger_haptic_pulse(unsigned int controllerIndex, unsigned int axis, unsigned int durationMicroSec);
+int ovr_freepie_trigger_haptic_pulse(unsigned int controllerIndex, unsigned int durationMicroSec, float frequency, float amplitude);
 
 #endif
