@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FreePIE.Core.Contracts;
 using FreePIE.Core.Plugins.OculusVR;
 
@@ -45,7 +43,7 @@ namespace FreePIE.Core.Plugins
 
         public override void DoBeforeNextExecute()
         {
-            Api.Read(out _data);
+            Api.Read(out Data);
             OnUpdate();
         }
 
@@ -59,34 +57,7 @@ namespace FreePIE.Core.Plugins
             Api.TriggerHapticPulse(controllerIndex, durationMicroSec, frequency, amplitude);
         }
 
-        private OpenVrData _data;
-
-        public OpenVr6Dof HeadPose => _data.HeadPose;
-        public OpenVr6Dof LeftTouchPose => _data.LeftTouchPose;
-        public OpenVr6Dof RightTouchPose => _data.RightTouchPose;
-
-        public float LeftTrigger => _data.LeftTrigger;
-        public float RightTrigger => _data.RightTrigger;
-        public float LeftGrip => _data.LeftGrip;
-        public float RightGrip => _data.RightGrip;
-
-        public Pointf LeftStick => _data.LeftStick;
-        public Pointf RightStick => _data.RightStick;
-
-        public float A => _data.A;
-        public float B => _data.B;
-        public float X => _data.X;
-        public float Y => _data.Y;
-        public float LThumb => _data.LThumb;
-        public float RThumb => _data.RThumb;
-        public float Menu => _data.Menu;
-        public float Home => _data.Home;
-
-        public uint RightTouchStatus => _data.RightTouchStatus;
-        public uint LeftTouchStatus => _data.LeftTouchStatus;
-        public uint HeadStatus => _data.HeadStatus;
-
-        public bool IsHmdMounted { get { return _data.IsHmdMounted > 0; } }
+        public OpenVrData Data;
     }
 
     [Global(Name = "openVR")]
@@ -94,45 +65,38 @@ namespace FreePIE.Core.Plugins
     {
         public OpenVRGlobal(OpenVRPlugin plugin) : base(plugin) { }
 
-        public OpenVr6Dof headPose => plugin.HeadPose;
-        public OpenVr6Dof leftTouchPose => plugin.LeftTouchPose;
-        public OpenVr6Dof rightTouchPose => plugin.RightTouchPose;
+        public OpenVr6Dof headPose => plugin.Data.HeadPose;
+        public OpenVr6Dof leftTouchPose => plugin.Data.LeftTouchPose;
+        public OpenVr6Dof rightTouchPose => plugin.Data.RightTouchPose;
 
-        public uint headStatus => plugin.HeadStatus;
-        public uint leftTouchStatus => plugin.LeftTouchStatus;
-        public uint rightTouchStatus => plugin.RightTouchStatus;
+        public uint headStatus => plugin.Data.HeadStatus;
+        public uint leftTouchStatus => plugin.Data.LeftTouchStatus;
+        public uint rightTouchStatus => plugin.Data.RightTouchStatus;
 
-        public bool isMounted => plugin.IsHmdMounted;
-        public bool isHeadTracking => plugin.HeadStatus > 1;
-        public bool isLeftTouchTracking => plugin.LeftTouchStatus > 1;
-        public bool isRightTouchTracking => plugin.RightTouchStatus > 1;
+        public bool isMounted => plugin.Data.IsHmdMounted > 0;
+        public bool isHeadTracking => plugin.Data.HeadStatus > 1;
+        public bool isLeftTouchTracking => plugin.Data.LeftTouchStatus > 1;
+        public bool isRightTouchTracking => plugin.Data.RightTouchStatus > 1;
 
-        public float leftTrigger => plugin.LeftTrigger;
-        public float rightTrigger => plugin.RightTrigger;
+        public float leftTrigger => plugin.Data.LeftTrigger;
+        public float rightTrigger => plugin.Data.RightTrigger;
 
-        public float leftGrip => plugin.LeftGrip;
-        public float rightGrip => plugin.RightGrip;
+        public float leftGrip => plugin.Data.LeftGrip;
+        public float rightGrip => plugin.Data.RightGrip;
 
-        public Pointf leftStick => plugin.LeftStick;
-        public Pointf rightStick => plugin.RightStick;
+        public Pointf leftStickAxes => plugin.Data.LeftStickAxes;
+        public Pointf rightStickAxes => plugin.Data.RightStickAxes;
 
-        public bool a => plugin.A > 0.6;
-        public bool b => plugin.B > 0.6;
-        public bool x => plugin.X > 0.6;
-        public bool y => plugin.Y > 0.6;
-        public bool lThumb => plugin.LThumb > 0.6;
-        public bool rThumb => plugin.RThumb > 0.6;
-        public bool menu => plugin.Menu > 0.6;
-        public bool home => plugin.Home > 0.6;
-
-        public bool touchingA => plugin.A > 0.1 && plugin.A < 0.6;
-        public bool touchingB => plugin.B > 0.1 && plugin.B < 0.6;
-        public bool touchingX => plugin.X > 0.1 && plugin.X < 0.6;
-        public bool touchingY => plugin.Y > 0.1 && plugin.Y < 0.6;
-        public bool touchingLThumb => plugin.LThumb > 0.1 && plugin.LThumb < 0.6;
-        public bool touchingRThumb => plugin.RThumb > 0.1 && plugin.RThumb < 0.6;
-        public bool touchingMenu => plugin.Menu > 0.1 && plugin.Menu < 0.6;
-        public bool touchingHome => plugin.Home > 0.1 && plugin.Home < 0.6;
+        public float a => plugin.Data.A;
+        public float b => plugin.Data.B;
+        public float x => plugin.Data.X;
+        public float y => plugin.Data.Y;
+        public float leftStick => plugin.Data.LeftStick;
+        public float rightStick => plugin.Data.RightStick;
+        public float leftThumb => plugin.Data.LeftThumb;
+        public float rightThumb => plugin.Data.RightThumb;
+        public float menu => plugin.Data.Menu;
+        public float home => plugin.Data.Home;
 
         public void center()
         {

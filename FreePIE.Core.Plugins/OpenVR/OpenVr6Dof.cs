@@ -37,15 +37,17 @@ namespace FreePIE.Core.Plugins.OculusVR
         public float LeftGrip;
         public float RightGrip;
 
-        public Pointf LeftStick;
-        public Pointf RightStick;
+        public Pointf LeftStickAxes;
+        public Pointf RightStickAxes;
 
         public float A;
         public float B;
         public float X;
         public float Y;
-        public float LThumb;
-        public float RThumb;
+        public float LeftStick;
+        public float RightStick;
+        public float LeftThumb;
+        public float RightThumb;
         public float Menu;
         public float Home;
 

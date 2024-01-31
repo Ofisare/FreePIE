@@ -16,27 +16,29 @@ typedef struct ovr_freepie_data {
 	ovr_freepie_6dof leftHand;
 	ovr_freepie_6dof rightHand;
 
-	float LTrigger;
-	float RTrigger;
+	float LeftTrigger;
+	float RightTrigger;
 
-	float LGrip;
-	float RGrip;
+	float LeftGrip;
+	float RightGrip;
 
-	float Lstick[2];
-	float Rstick[2];
+	float LeftStickAxes[2];
+	float RightStickAxes[2];
 
 	float A;
 	float B;
 	float X;
 	float Y;
-	float LThumb;
-	float RThumb;
+	float LeftStick;
+	float RightStick;
+	float LeftThumb;
+	float RightThumb;
 	float Menu;
 	float Home;
 
-	unsigned int statusHead;
-	unsigned int statusLeftHand;
-	unsigned int statusRightHand;
+	unsigned int StatusHead;
+	unsigned int StatusLeftHand;
+	unsigned int StatusRightHand;
 	unsigned int HmdMounted;
 
 } ovr_freepie_data;

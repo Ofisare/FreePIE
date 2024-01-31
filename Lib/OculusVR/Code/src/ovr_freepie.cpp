@@ -95,42 +95,45 @@ int ovr_freepie_read(ovr_freepie_data *output)
 
 	m_system->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseStanding, 0, &headTrackedDevicePose, 1);
 	ovr_freepie_setPose(&headTrackedDevicePose, &output->head);
-	output->statusHead = headTrackedDevicePose.eTrackingResult == vr::TrackingResult_Running_OK ? 2 : headTrackedDevicePose.eTrackingResult > vr::TrackingResult_Running_OK ? 1 : 0;
+	output->StatusHead = headTrackedDevicePose.eTrackingResult == vr::TrackingResult_Running_OK ? 2 : headTrackedDevicePose.eTrackingResult > vr::TrackingResult_Running_OK ? 1 : 0;
 
 	vr::TrackedDevicePose_t leftTrackedDevicePose;
 	vr::VRControllerState_t lefControllerState;
 	m_system->GetControllerStateWithPose(vr::TrackingUniverseStanding, leftID, &lefControllerState, sizeof(lefControllerState), &leftTrackedDevicePose);
 	ovr_freepie_setPose(&leftTrackedDevicePose, &output->leftHand);
-	output->statusLeftHand = leftTrackedDevicePose.eTrackingResult == vr::TrackingResult_Running_OK ? 2 : leftTrackedDevicePose.eTrackingResult > vr::TrackingResult_Running_OK ? 1 : 0;
-	output->LTrigger = lefControllerState.rAxis[triggerID].x;
-	output->LGrip = lefControllerState.rAxis[gripID].x;
-	output->Lstick[0] = lefControllerState.rAxis[stickID].x;
-	output->Lstick[1] = lefControllerState.rAxis[stickID].y;
+	output->StatusLeftHand = leftTrackedDevicePose.eTrackingResult == vr::TrackingResult_Running_OK ? 2 : leftTrackedDevicePose.eTrackingResult > vr::TrackingResult_Running_OK ? 1 : 0;
+	output->LeftTrigger = lefControllerState.rAxis[triggerID].x;
+	output->LeftGrip = lefControllerState.rAxis[gripID].x;
+	output->LeftStickAxes[0] = lefControllerState.rAxis[stickID].x;
+	output->LeftStickAxes[1] = lefControllerState.rAxis[stickID].y;
 
-	uint64_t buttonA = vr::ButtonMaskFromId(vr::k_EButton_IndexController_A);
+	uint64_t buttonA = vr::ButtonMaskFromId(vr::k_EButton_A);
 	uint64_t buttonB = vr::ButtonMaskFromId(vr::k_EButton_IndexController_B);
+	uint64_t buttonStick = vr::ButtonMaskFromId(vr::k_EButton_Axis0);
 	uint64_t buttonMenu = vr::ButtonMaskFromId(vr::k_EButton_System);
 	uint64_t buttonThumb = vr::ButtonMaskFromId(vr::k_EButton_ProximitySensor);
 
 	output->X = ((lefControllerState.ulButtonPressed & buttonA) == buttonA) ? 1 : ((lefControllerState.ulButtonPressed & buttonA) == buttonA) ? 0.5 : 0;
 	output->Y = ((lefControllerState.ulButtonPressed & buttonB) == buttonB) ? 1 : ((lefControllerState.ulButtonPressed & buttonB) == buttonB) ? 0.5 : 0;
+	output->LeftStick = ((lefControllerState.ulButtonPressed & buttonStick) == buttonStick) ? 1 : ((lefControllerState.ulButtonPressed & buttonStick) == buttonStick) ? 0.5 : 0;
 	output->Menu = ((lefControllerState.ulButtonPressed & buttonMenu) == buttonMenu) ? 1 : ((lefControllerState.ulButtonPressed & buttonMenu) == buttonMenu) ? 0.5 : 0;
-	output->LThumb = ((lefControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 1 : ((lefControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 0.5 : 0;
+	output->LeftThumb = ((lefControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 1 : ((lefControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 0.5 : 0;
 
 	vr::TrackedDevicePose_t rightTrackedDevicePose;
 	vr::VRControllerState_t rightControllerState;
 	m_system->GetControllerStateWithPose(vr::TrackingUniverseStanding, rightID, &rightControllerState, sizeof(rightControllerState), &rightTrackedDevicePose);
 	ovr_freepie_setPose(&rightTrackedDevicePose, &output->rightHand);
-	output->statusRightHand = rightTrackedDevicePose.eTrackingResult == vr::TrackingResult_Running_OK ? 2 : rightTrackedDevicePose.eTrackingResult > vr::TrackingResult_Running_OK ? 1 : 0;
-	output->RTrigger = rightControllerState.rAxis[triggerID].x;
-	output->RGrip = rightControllerState.rAxis[gripID].x;
-	output->Rstick[0] = rightControllerState.rAxis[stickID].x;
-	output->Rstick[1] = rightControllerState.rAxis[stickID].y;
+	output->StatusRightHand = rightTrackedDevicePose.eTrackingResult == vr::TrackingResult_Running_OK ? 2 : rightTrackedDevicePose.eTrackingResult > vr::TrackingResult_Running_OK ? 1 : 0;
+	output->RightTrigger = rightControllerState.rAxis[triggerID].x;
+	output->RightGrip = rightControllerState.rAxis[gripID].x;
+	output->RightStickAxes[0] = rightControllerState.rAxis[stickID].x;
+	output->RightStickAxes[1] = rightControllerState.rAxis[stickID].y;
 
 	output->A = ((rightControllerState.ulButtonPressed & buttonA) == buttonA) ? 1 : ((rightControllerState.ulButtonPressed & buttonA) == buttonA) ? 0.5 : 0;
 	output->B = ((rightControllerState.ulButtonPressed & buttonB) == buttonB) ? 1 : ((rightControllerState.ulButtonPressed & buttonB) == buttonB) ? 0.5 : 0;
+	output->RightStick = ((rightControllerState.ulButtonPressed & buttonStick) == buttonStick) ? 1 : ((rightControllerState.ulButtonPressed & buttonStick) == buttonStick) ? 0.5 : 0;
 	output->Home = ((rightControllerState.ulButtonPressed & buttonMenu) == buttonMenu) ? 1 : ((rightControllerState.ulButtonPressed & buttonMenu) == buttonMenu) ? 0.5 : 0;
-	output->RThumb = ((rightControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 1 : ((rightControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 0.5 : 0;
+	output->RightThumb = ((rightControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 1 : ((rightControllerState.ulButtonPressed & buttonThumb) == buttonThumb) ? 0.5 : 0;
 
 	output->HmdMounted = m_system->GetTrackedDeviceActivityLevel(0) == vr::k_EDeviceActivityLevel_UserInteraction;
 	
