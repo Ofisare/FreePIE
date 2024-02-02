@@ -25,16 +25,11 @@ typedef struct ovr_freepie_data {
 	float LeftStickAxes[2];
 	float RightStickAxes[2];
 
-	float A;
-	float B;
-	float X;
-	float Y;
-	float LeftStick;
-	float RightStick;
-	float LeftThumb;
-	float RightThumb;
-	float Menu;
-	float Home;
+	unsigned long long LeftButtonsPressed;
+	unsigned long long LeftButtonsTouched;
+
+	unsigned long long RightButtonsPressed;
+	unsigned long long RightButtonsTouched;
 
 	unsigned int StatusHead;
 	unsigned int StatusLeftHand;
