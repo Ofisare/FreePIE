@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FreePIE.Core.Contracts;
 using FreePIE.Core.Plugins.OculusVR;
 
@@ -10,6 +8,9 @@ namespace FreePIE.Core.Plugins
     [GlobalType(Type = typeof(OpenVRGlobal))]
     public class OpenVRPlugin : Plugin
     {
+        public OpenVrData Data;
+        public OpenVrMapping Mapping;
+
         public override object CreateGlobal()
         {
             return new OpenVRGlobal(this);
@@ -35,6 +36,13 @@ namespace FreePIE.Core.Plugins
             if (!Api.Init())
                 throw new Exception("Open VR SDK failed to init");
 
+            // oculus defaults
+            Mapping.A = Mapping.X = (ulong)1 << 7;
+            Mapping.B = Mapping.Y = (ulong)1 << 1;
+            Mapping.LeftStick = Mapping.RightStick = (ulong)32 << 1;
+            Mapping.Menu = Mapping.Home = (ulong)0 << 1;
+            Mapping.LeftThumb = Mapping.RightThumb = (ulong)32 << 1;
+
             return null;
         }
 
@@ -45,7 +53,7 @@ namespace FreePIE.Core.Plugins
 
         public override void DoBeforeNextExecute()
         {
-            Api.Read(out _data);
+            Api.Read(out Data);
             OnUpdate();
         }
 
@@ -59,80 +67,63 @@ namespace FreePIE.Core.Plugins
             Api.TriggerHapticPulse(controllerIndex, durationMicroSec, frequency, amplitude);
         }
 
-        private OpenVrData _data;
+        public float GetButtonState(bool left, ulong button)
+        {
+            ulong pressed = left ? Data.LeftButtonsPressed : Data.RightButtonsPressed;
+            ulong touched = left ? Data.LeftButtonsTouched : Data.RightButtonsTouched;
 
-        public OpenVr6Dof HeadPose => _data.HeadPose;
-        public OpenVr6Dof LeftTouchPose => _data.LeftTouchPose;
-        public OpenVr6Dof RightTouchPose=> _data.RightTouchPose;
+            if ((pressed & button) == button)
+                return 1.0f;
 
-        public float LeftTrigger => _data.LeftTrigger;
-        public float RightTrigger => _data.RightTrigger;
-        public float LeftGrip => _data.LeftGrip;
-        public float RightGrip => _data.RightGrip;
+            if ((touched & button) == button)
+                return 0.5f;
 
-        public Pointf LeftStick => _data.LeftStick;
-        public Pointf RightStick => _data.RightStick;
-
-        public float A => _data.A;
-        public float B => _data.B;
-        public float X => _data.X;
-        public float Y => _data.Y;
-        public float LThumb => _data.LThumb;
-        public float RThumb => _data.RThumb;
-        public float Menu => _data.Menu;
-        public float Home => _data.Home;
-
-        public uint RightTouchStatus => _data.RightTouchStatus;
-        public uint LeftTouchStatus => _data.LeftTouchStatus;
-        public uint HeadStatus => _data.HeadStatus;
-
-        public bool IsHmdMounted { get { return _data.IsHmdMounted > 0; } }
+            return 0.0f;
+        }
     }
 
     [Global(Name = "openVR")]
     public class OpenVRGlobal : UpdateblePluginGlobal<OpenVRPlugin>
     {
-        public OpenVRGlobal(OpenVRPlugin plugin) : base(plugin){}
+        public OpenVRGlobal(OpenVRPlugin plugin) : base(plugin) { }
 
-        public OpenVr6Dof headPose => plugin.HeadPose;
-        public OpenVr6Dof leftTouchPose => plugin.LeftTouchPose;
-        public OpenVr6Dof rightTouchPose => plugin.RightTouchPose;
-                
-        public uint headStatus => plugin.HeadStatus;
-        public uint leftTouchStatus => plugin.LeftTouchStatus;
-        public uint rightTouchStatus => plugin.RightTouchStatus;
+        public OpenVr6Dof headPose => plugin.Data.HeadPose;
+        public OpenVr6Dof leftTouchPose => plugin.Data.LeftTouchPose;
+        public OpenVr6Dof rightTouchPose => plugin.Data.RightTouchPose;
 
-        public bool isMounted => plugin.IsHmdMounted;
-        public bool isHeadTracking => plugin.HeadStatus > 1;
-        public bool isLeftTouchTracking => plugin.LeftTouchStatus > 1;
-        public bool isRightTouchTracking => plugin.RightTouchStatus > 1;
+        public uint headStatus => plugin.Data.HeadStatus;
+        public uint leftTouchStatus => plugin.Data.LeftTouchStatus;
+        public uint rightTouchStatus => plugin.Data.RightTouchStatus;
 
-        public float leftTrigger => plugin.LeftTrigger;
-        public float rightTrigger => plugin.RightTrigger;
+        public bool isMounted => plugin.Data.IsHmdMounted > 0;
+        public bool isHeadTracking => plugin.Data.HeadStatus > 1;
+        public bool isLeftTouchTracking => plugin.Data.LeftTouchStatus > 1;
+        public bool isRightTouchTracking => plugin.Data.RightTouchStatus > 1;
 
-        public float leftGrip => plugin.LeftGrip;
-        public float rightGrip => plugin.RightGrip;
+        public float leftTrigger => plugin.Data.LeftTrigger;
+        public float rightTrigger => plugin.Data.RightTrigger;
 
-        public Pointf leftStick => plugin.LeftStick;
-        public Pointf rightStick => plugin.RightStick;
+        public float leftGrip => plugin.Data.LeftGrip;
+        public float rightGrip => plugin.Data.RightGrip;
 
-        public bool a => plugin.A > 0.6;
-        public bool b => plugin.B > 0.6;
-        public bool x => plugin.X > 0.6;
-        public bool y => plugin.Y > 0.6;
-        public bool lThumb => plugin.LThumb > 0.6;
-        public bool rThumb => plugin.RThumb > 0.6;
-        public bool menu => plugin.Menu > 0.6;
-        public bool home => plugin.Home > 0.6;
+        public Pointf leftStickAxes => plugin.Data.LeftStickAxes;
+        public Pointf rightStickAxes => plugin.Data.RightStickAxes;
 
-        public bool touchingA => plugin.A > 0.1 && plugin.A < 0.6;
-        public bool touchingB => plugin.B > 0.1 && plugin.B < 0.6;
-        public bool touchingX => plugin.X > 0.1 && plugin.X < 0.6;
-        public bool touchingY => plugin.Y > 0.1 && plugin.Y < 0.6;
-        public bool touchingLThumb => plugin.LThumb > 0.1 && plugin.LThumb < 0.6;
-        public bool touchingRThumb => plugin.RThumb > 0.1 && plugin.RThumb < 0.6;
-        public bool touchingMenu => plugin.Menu > 0.1 && plugin.Menu < 0.6;
-        public bool touchingHome => plugin.Home > 0.1 && plugin.Home < 0.6;
+        public float a => plugin.GetButtonState(false, plugin.Mapping.A);
+        public float b => plugin.GetButtonState(false, plugin.Mapping.B);
+        public float x => plugin.GetButtonState(true, plugin.Mapping.X);
+        public float y => plugin.GetButtonState(true, plugin.Mapping.Y);
+        public float leftStick => plugin.GetButtonState(true, plugin.Mapping.LeftStick);
+        public float rightStick => plugin.GetButtonState(false, plugin.Mapping.RightStick);
+        public float leftThumb => plugin.GetButtonState(true, plugin.Mapping.LeftThumb);
+        public float rightThumb => plugin.GetButtonState(false, plugin.Mapping.RightThumb);
+        public float menu => plugin.GetButtonState(true, plugin.Mapping.Menu);
+        public float home => plugin.GetButtonState(false, plugin.Mapping.Home);
+
+        public float getButtonState(bool left, int buttonIndex)
+        {
+            return plugin.GetButtonState(left, (ulong)1 << buttonIndex);
+        }
 
         public void center()
         {
@@ -142,6 +133,20 @@ namespace FreePIE.Core.Plugins
         public void triggerHapticPulse(uint controllerIndex, uint durationMicroSec, float frequency, float amplitude)
         {
             plugin.TriggerHapticPulse(controllerIndex, durationMicroSec, frequency, amplitude);
+        }
+
+        public void mapButtons(int a, int b, int x, int y, int leftStick, int rightStick, int leftThumb, int rightThumb, int menu, int home)
+        {
+            plugin.Mapping.A = (ulong)1 << a;
+            plugin.Mapping.B = (ulong)1 << b;
+            plugin.Mapping.X = (ulong)1 << x;
+            plugin.Mapping.Y = (ulong)1 << y;
+            plugin.Mapping.LeftStick = (ulong)1 << leftStick;
+            plugin.Mapping.RightStick = (ulong)1 << rightStick;
+            plugin.Mapping.LeftThumb = (ulong)1 << leftThumb;
+            plugin.Mapping.RightThumb = (ulong)1 << rightThumb;
+            plugin.Mapping.Menu = (ulong)1 << menu;
+            plugin.Mapping.Home = (ulong)1 << home;
         }
     }
 }

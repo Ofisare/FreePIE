@@ -24,7 +24,7 @@ namespace FreePIE.Core.Plugins.OculusVR
         public float x, y;
     }
 
-	[StructLayout(LayoutKind.Sequential)]
+    [StructLayout(LayoutKind.Sequential)]
     public struct OpenVrData
     {
         public OpenVr6Dof HeadPose;
@@ -37,22 +37,33 @@ namespace FreePIE.Core.Plugins.OculusVR
         public float LeftGrip;
         public float RightGrip;
 
-        public Pointf LeftStick;
-        public Pointf RightStick;
+        public Pointf LeftStickAxes;
+        public Pointf RightStickAxes;
 
-        public float A;
-        public float B;
-        public float X;
-        public float Y;
-        public float LThumb;
-        public float RThumb;
-        public float Menu;
-        public float Home;
+        public ulong LeftButtonsPressed;
+        public ulong LeftButtonsTouched;
+
+        public ulong RightButtonsPressed;
+        public ulong RightButtonsTouched;
 
         public uint HeadStatus;
         public uint LeftTouchStatus;
         public uint RightTouchStatus;
 
         public uint IsHmdMounted;
+    }
+
+    public struct OpenVrMapping
+    {
+        public ulong A;
+        public ulong B;
+        public ulong X;
+        public ulong Y;
+        public ulong LeftStick;
+        public ulong RightStick;
+        public ulong LeftThumb;
+        public ulong RightThumb;
+        public ulong Menu;
+        public ulong Home;
     }
 }

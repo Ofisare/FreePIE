@@ -47,3 +47,5 @@ InstallerTemp
 /Lib/OculusVR/Code/binaries/Win32/Release
 /Lib/OculusVR/Code/Debug
 /Lib/OculusVR/Code/Release
+/Lib/OculusVR/Code/binaries/Win32/Debug
+/Lib/OculusVR/Code/LibOVR2
