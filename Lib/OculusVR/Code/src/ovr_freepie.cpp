@@ -13,7 +13,8 @@ double HmdFrameTiming;
 
 int ovr_freepie_init()
 {
-	ovrResult result = ovr_Initialize(nullptr);
+	ovrInitParams initParams = { ovrInit_RequestVersion + ovrInit_Invisible, OVR_MINOR_VERSION, NULL, 0, 0 };
+	ovrResult result = ovr_Initialize(&initParams);
 	if (!OVR_SUCCESS(result))
 		return 1;
 
@@ -63,40 +64,35 @@ int ovr_freepie_read(ovr_freepie_data *output)
 	ovrTrackingState ts = ovr_GetTrackingState(HMD, ovr_GetTimeInSeconds(), HmdFrameTiming);
 	ovrSessionStatus sessionStatus;
 
-	ovrResult result = ovr_GetSessionStatus(HMD, &sessionStatus);
+	if (OVR_SUCCESS(ovr_GetSessionStatus(HMD, &sessionStatus)))
+	{
+		output->HmdMounted = sessionStatus.HmdMounted;
+		output->StatusHead = ts.StatusFlags == (ovrStatus_OrientationTracked | ovrStatus_PositionTracked) ? 2 : ts.StatusFlags > 0 ? 1 : 0;
+		output->StatusLeftHand = ts.HandStatusFlags[ovrHand_Left] == (ovrStatus_OrientationTracked | ovrStatus_PositionTracked) ? 2 : ts.HandStatusFlags[ovrHand_Left] > 0 ? 1 : 0;
+		output->StatusRightHand = ts.HandStatusFlags[ovrHand_Right] == (ovrStatus_OrientationTracked | ovrStatus_PositionTracked) ? 2 : ts.HandStatusFlags[ovrHand_Right] > 0 ? 1 : 0;
 
-	output->HmdMounted = sessionStatus.HmdMounted;
-	output->statusHead = ts.StatusFlags == (ovrStatus_OrientationTracked | ovrStatus_PositionTracked) ? 2 : ts.StatusFlags > 0 ? 1 : 0;
-	output->statusLeftHand = ts.HandStatusFlags[ovrHand_Left] == (ovrStatus_OrientationTracked | ovrStatus_PositionTracked) ? 2 : ts.HandStatusFlags[ovrHand_Left] > 0 ? 1 : 0;
-	output->statusRightHand = ts.HandStatusFlags[ovrHand_Right] == (ovrStatus_OrientationTracked | ovrStatus_PositionTracked) ? 2 : ts.HandStatusFlags[ovrHand_Right] > 0 ? 1 : 0;
-
-	ovrPosef headpose = ts.HeadPose.ThePose;
-	ovrPosef lhandPose = ts.HandPoses[ovrHand_Left].ThePose;
-	ovrPosef rhandPose = ts.HandPoses[ovrHand_Right].ThePose;
-	ovr_freepie_setPose(&headpose, &output->head);
-	ovr_freepie_setPose(&lhandPose, &output->leftHand);
-	ovr_freepie_setPose(&rhandPose, &output->rightHand);
+		ovrPosef headpose = ts.HeadPose.ThePose;
+		ovrPosef lhandPose = ts.HandPoses[ovrHand_Left].ThePose;
+		ovrPosef rhandPose = ts.HandPoses[ovrHand_Right].ThePose;
+		ovr_freepie_setPose(&headpose, &output->head);
+		ovr_freepie_setPose(&lhandPose, &output->leftHand);
+		ovr_freepie_setPose(&rhandPose, &output->rightHand);
+	}
 
 	ovrInputState inputState;
 	if (OVR_SUCCESS(ovr_GetInputState(HMD, ovrControllerType_Touch, &inputState)))
 	{
-		output->A = ((inputState.Buttons & ovrButton_A) == ovrButton_A) ? 1 : ((inputState.Touches & ovrTouch_A) == ovrTouch_A) ? 0.5 : 0;
-		output->B = ((inputState.Buttons & ovrButton_B) == ovrButton_B) ? 1 : ((inputState.Touches & ovrTouch_B) == ovrTouch_B) ? 0.5 : 0;
-		output->X = ((inputState.Buttons & ovrButton_X) == ovrButton_X) ? 1 : ((inputState.Touches & ovrTouch_X) == ovrTouch_X) ? 0.5 : 0;
-		output->Y = ((inputState.Buttons & ovrButton_Y) == ovrButton_Y) ? 1 : ((inputState.Touches & ovrTouch_Y) == ovrTouch_Y) ? 0.5 : 0;
-		output->LThumb = ((inputState.Buttons & ovrButton_LThumb) == ovrButton_LThumb) ? 1 : ((inputState.Touches & ovrTouch_LThumb) == ovrTouch_LThumb) ? 0.5 : 0;
-		output->RThumb = ((inputState.Buttons & ovrButton_RThumb) == ovrButton_RThumb) ? 1 : ((inputState.Touches & ovrTouch_RThumb) == ovrTouch_RThumb) ? 0.5 : 0;
-		output->Menu = ((inputState.Buttons & ovrButton_Enter) == ovrButton_Enter) ? 1 : 0;
-		output->Home = ((inputState.Buttons & ovrButton_Home) == ovrButton_Home) ? 1 : 0;
+		output->LeftTrigger = inputState.IndexTrigger[ovrHand_Left];
+		output->LeftGrip = inputState.HandTrigger[ovrHand_Left];
+		output->LeftStickAxes[0] = inputState.Thumbstick[ovrHand_Left].x;
+		output->LeftStickAxes[1] = inputState.Thumbstick[ovrHand_Left].y;
+		output->RightTrigger = inputState.IndexTrigger[ovrHand_Right];
+		output->RightGrip = inputState.HandTrigger[ovrHand_Right];
+		output->RightStickAxes[0] = inputState.Thumbstick[ovrHand_Right].x;
+		output->RightStickAxes[1] = inputState.Thumbstick[ovrHand_Right].y;
 
-		output->LTrigger = inputState.IndexTrigger[ovrHand_Left];
-		output->LGrip = inputState.HandTrigger[ovrHand_Left];
-		output->Lstick[0] = inputState.Thumbstick[ovrHand_Left].x;
-		output->Lstick[1] = inputState.Thumbstick[ovrHand_Left].y;
-		output->RTrigger = inputState.IndexTrigger[ovrHand_Right];
-		output->RGrip = inputState.HandTrigger[ovrHand_Right];
-		output->Rstick[0] = inputState.Thumbstick[ovrHand_Right].x;
-		output->Rstick[1] = inputState.Thumbstick[ovrHand_Right].y;
+		output->LeftButtonsPressed = output->RightButtonsPressed = inputState.Buttons;
+		output->LeftButtonsTouched = output->RightButtonsTouched = inputState.Touches;
 	}
 
 	return 0;
@@ -105,13 +101,49 @@ int ovr_freepie_trigger_haptic_pulse(unsigned int controllerIndex, unsigned int 
 {
 	if (controllerIndex == 0)
 	{
-		ovr_SetControllerVibration(HMD, ovrControllerType_LTouch, frequency, amplitude);
+		ovr_SetControllerVibration(HMD, ovrControllerType_LTouch, frequency, amplitude);	
 	}
 	else
 	{
 		ovr_SetControllerVibration(HMD, ovrControllerType_RTouch, frequency, amplitude);
 	}
 
+	//unsigned char amplitudeChar = (uint8_t)255;// round(amplitude * 255);
+	//ovrControllerType_ controller = ovrControllerType_LTouch;
+	//if (controllerIndex > 0)
+	//	controller = ovrControllerType_RTouch;
+	//
+	//ovrTouchHapticsDesc desc = ovr_GetTouchHapticsDesc(HMD, controller);
+	//
+	//ovrHapticsPlaybackState state;
+	//ovrResult result = ovr_GetControllerVibrationState(HMD, controller, &state);
+	//if (result != ovrSuccess || state.SamplesQueued >= desc.QueueMinSizeToAvoidStarvation)
+	//{
+	//	return 1;
+	//}
+	//
+	//unsigned char* samples = new unsigned char [desc.SubmitOptimalSamples];
+	//for (int32_t i = 0; i < desc.SubmitOptimalSamples; ++i)
+	//	samples[i] = amplitudeChar;
+	//
+	//ovrHapticsBuffer buffer;
+	//buffer.SubmitMode = ovrHapticsBufferSubmit_Enqueue;
+	//buffer.SamplesCount = desc.SubmitOptimalSamples;
+	//buffer.Samples = samples;
+	//result = ovr_SubmitControllerVibration(HMD, controller, &buffer);
+	//delete[] samples;
+	//
+	//if (result != ovrSuccess)
+	//{
+	//	return 1;
+	//}
+	//
+	//result = ovr_GetControllerVibrationState(HMD, controller, &state);
+	//if (result != ovrSuccess || state.SamplesQueued >= desc.QueueMinSizeToAvoidStarvation)
+	//{
+	//	return 1;
+	//}
+	
 	return 0;
 }
 
