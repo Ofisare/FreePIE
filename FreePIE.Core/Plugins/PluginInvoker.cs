@@ -69,17 +69,24 @@ namespace FreePIE.Core.Plugins
             
             foreach(var pluginType in pluginTypes)
             {
-                var plugin = pluginFactory(pluginType);
-                var pluginSettings = settings.PluginSettings.First(ps => ps.PluginType == pluginType.FullName);
-
-                pluginSettings.FriendlyName = plugin.FriendlyName;
-                InitProperties(plugin, pluginSettings.PluginProperties);
-
-                var helpFile = string.Format(@"{0}\{1}.rtf", paths.GetApplicationPath(helpFolder), pluginType.FullName);
-
-                if(fileSystem.Exists(helpFile))
+                try
                 {
-                    pluginSettings.HelpFile = helpFile;
+                    var plugin = pluginFactory(pluginType);
+                    var pluginSettings = settings.PluginSettings.First(ps => ps.PluginType == pluginType.FullName);
+
+                    pluginSettings.FriendlyName = plugin.FriendlyName;
+                    InitProperties(plugin, pluginSettings.PluginProperties);
+
+                    var helpFile = string.Format(@"{0}\{1}.rtf", paths.GetApplicationPath(helpFolder), pluginType.FullName);
+
+                    if (fileSystem.Exists(helpFile))
+                    {
+                        pluginSettings.HelpFile = helpFile;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw;
                 }
             }
         }

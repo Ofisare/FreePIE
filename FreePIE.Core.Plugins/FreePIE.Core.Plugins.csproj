@@ -55,6 +55,9 @@
       <HintPath>..\Lib\Tobii\EyeXFramework.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Nefarius.ViGEm.Client, Version=1.21.256.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nefarius.ViGEm.Client.1.21.256\lib\netstandard2.0\Nefarius.ViGEm.Client.dll</HintPath>
+    </Reference>
     <Reference Include="PPJoyWrapper">
       <HintPath>..\Lib\PPJoyWrapper\PPJoyWrapper.dll</HintPath>
     </Reference>
@@ -126,6 +129,7 @@
     <Compile Include="TrackIR\NPClientSpoof.cs" />
     <Compile Include="TrackIR\TrackIRDll.cs" />
     <Compile Include="TrackIR\TrackIRHeadposeData.cs" />
+    <Compile Include="VigemPlugin.cs" />
     <Compile Include="VJoyPlugin.cs" />
     <Compile Include="VuzixTrackerPlugin.cs" />
     <Compile Include="WiimotePlugin.cs" />
@@ -178,6 +182,7 @@
     <None Include="Help\FreePIE.Core.Plugins.FreeImuPlugin.rtf" />
     <None Include="Help\FreePIE.Core.Plugins.AhrsImuPlugin.rtf" />
     <None Include="Help\FreePIE.Core.Plugins.VJoyPlugin.rtf" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -21,6 +21,7 @@ namespace FreePIE.GUI.Bootstrap
 
         public Bootstrapper()
         {
+            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
             Initialize();
             AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         }
