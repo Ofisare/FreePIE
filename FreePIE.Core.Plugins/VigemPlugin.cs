@@ -5,10 +5,6 @@ using Nefarius.ViGEm.Client.Targets.DualShock4;
 using Nefarius.ViGEm.Client.Targets.Xbox360;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FreePIE.Core.Plugins
 {
@@ -16,6 +12,8 @@ namespace FreePIE.Core.Plugins
     public class VigemPlugin : Plugin
     {
         public ViGEmClient Client { get; private set; }
+        public string ErrorMessage { get; private set; }
+
         public IDualShock4Controller DualShockController { get; private set; }
         public IXbox360Controller XBoxController { get; private set; }
 
@@ -45,7 +43,7 @@ namespace FreePIE.Core.Plugins
             catch (Exception ex)
             {
                 Client = null;
-                throw new Exception("Vigem SDK failed to init: " + ex.Message);
+                ErrorMessage = "Vigem SDK failed to init: " + ex.Message;
             }
 
             return null;
@@ -88,6 +86,9 @@ namespace FreePIE.Core.Plugins
 
         public void CreateDualShockController()
         {
+            if (Client == null)
+                return;
+
             if (DualShockController != null)
                 return;
 
@@ -97,6 +98,9 @@ namespace FreePIE.Core.Plugins
 
         public void CreateXBoxController()
         {
+            if (Client == null)
+                return;
+
             if (XBoxController != null)
                 return;
 
@@ -163,6 +167,8 @@ namespace FreePIE.Core.Plugins
     public class VigemGlobal : UpdateblePluginGlobal<VigemPlugin>
     {
         public VigemGlobal(VigemPlugin plugin) : base(plugin) { }
+
+        public string Error() => plugin.ErrorMessage;
 
         public void CreateController(VigemController controller)
         {
