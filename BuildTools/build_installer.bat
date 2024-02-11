@@ -1,4 +1,4 @@
-set PATH=%PATH%;C:\Program Files (x86)\MSBuild\14.0\Bin\amd64;C:\Program Files (x86)\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin
+set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin
 
 rem go to current folder
 cd %~dp0

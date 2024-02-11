@@ -22,7 +22,7 @@ namespace FreePIE.Core.Plugins.SensorFusion
             // get the rotation in the object's reference frame.
             if (conjugate)
             {
-                w = w;
+                //w = w;
                 x = -x;
                 y = -y;
                 z = -z;

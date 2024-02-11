@@ -84,7 +84,7 @@ namespace FreePIE.Core.Plugins
                         pluginSettings.HelpFile = helpFile;
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     throw;
                 }
