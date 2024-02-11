@@ -49,6 +49,12 @@ namespace FreePIE.Console
                     throw;
                 }
 
+                string profile = null;
+                if (args.Length > 1)
+                {
+                    profile = args[1];
+                }
+
                 System.Console.TreatControlCAsInput = false;
                 System.Console.CancelKeyPress += (s, e) => Stop();
 
@@ -56,7 +62,7 @@ namespace FreePIE.Console
 
                 System.Console.WriteLine("Starting script parser");
 
-                scriptEngine.Start(script, args[0]);
+                scriptEngine.Start(script, args[0], profile);
                 waitUntilStopped.WaitOne();
             }
             catch (Exception e)
@@ -88,7 +94,7 @@ namespace FreePIE.Console
 
         private void PrintHelp()
         {
-            System.Console.WriteLine("FreePIE.Console.exe <script_file>");
+            System.Console.WriteLine("FreePIE.Console.exe <script_file> <optional_profile>");
         }
     }
 }

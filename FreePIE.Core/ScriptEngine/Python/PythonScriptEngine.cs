@@ -112,7 +112,7 @@ namespace FreePIE.Core.ScriptEngine.Python
             this.fileSystem = fileSystem;
         }
 
-        public void Start(string script, string scriptPath = null)
+        public void Start(string script, string scriptPath = null, string profile = null)
         {
             thread = new Thread(obj1 => 
             {
@@ -131,6 +131,8 @@ namespace FreePIE.Core.ScriptEngine.Python
                     var usedGlobalEnums = parser.GetAllUsedGlobalEnums(script);
 
                     var globals = CreateGlobals(usedPlugins, globalProviders);
+                    if (string.IsNullOrEmpty(profile) == false)
+                        globals.Add("profile", profile);
 
                     Engine.Runtime.AddReferences(
                         usedPlugins.Select(x => x.GetType().Assembly)
