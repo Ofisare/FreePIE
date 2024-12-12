@@ -14,7 +14,7 @@ namespace FreePIE.Core.Plugins.joystick
     }
 
     [Global(Name = "joystick")]
-    public class JoystickGlobal : IDisposable
+    public class JoystickGlobal
     {
 
         private readonly Joystick _joystick;
@@ -61,14 +61,8 @@ namespace FreePIE.Core.Plugins.joystick
                 catch { }
             }
           
-        }
+        }        
         
-        public void Dispose()
-        {
-            _joystick.Unacquire();
-            _joystick.Dispose();
-            Stopped?.Invoke(this, null);
-        }
 
         public string name { get { return _joystick?.Information.ProductName ?? ""; } }
         
