@@ -108,6 +108,24 @@ namespace FreePIE.Core.Plugins
             setButtonPressedStrategy.Do();
         }
 
+        public int X
+        {
+            get => CurrentMouseState.X;
+            set
+            {
+                DeltaX = value - X;
+            }
+        }
+
+        public int Y
+        {
+            get => CurrentMouseState.Y;            
+            set
+            {
+                DeltaY = value - Y;
+            }
+        }
+
         public double DeltaX
         {
             set
@@ -245,6 +263,17 @@ namespace FreePIE.Core.Plugins
         public int wheelMax
         {
             get { return MousePlugin.WheelMax; }
+        }
+
+        public int X
+        {
+            get { return plugin.X; }
+            set { plugin.X = value; }
+        }
+        public int Y
+        {
+            get { return plugin.Y; }
+            set { plugin.Y = value; }
         }
 
         public double deltaX
