@@ -9,6 +9,12 @@ namespace FreePIE.Console
     {
         public static void Main(string[] args)
         {
+            Core.ScriptEngine.Globals.ScriptHelpers.DiagnosticHelper.Version = System.Reflection.Assembly
+                .GetExecutingAssembly()
+                .GetName()
+                .Version
+                .ToString();
+
             var kernel = ServiceBootstrapper.Create();
             kernel.Get<ConsoleHost>().Start(args);
         }

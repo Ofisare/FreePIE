@@ -13,6 +13,19 @@ FreePIE is very similar to the popular utility GlovePIE, but encourages open dev
 
 FreePIE is licensed under GPLv2  
 
+Changelog 2.1
+* fixes for keyboard plugin
+* hand tracking support for OpenXR
+* console shutdown correctly shuts down all plugins
+* console provides FreePIE version
+* curve edit support
+* advanced xbox/ps controller support (more than one)
+* mouse absolute position support (where it works)
+
+Changelog 2.0
+* runtime changed to 64bit (broke a lot of existing plugins)
+* first full VR release
+
 Changelog 1.11.724.0
 * Added support for the Wii Balanceboard
 * System tray feature use /t to minimize to tray from command line
