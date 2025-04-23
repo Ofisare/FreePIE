@@ -14,6 +14,9 @@ using FreePIE.GUI.Views.Main;
 using FreePIE.GUI.Views.Main.Menu;
 using FreePIE.GUI.Views.Plugin;
 using FreePIE.GUI.Views.Script;
+
+
+
 using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using IEventAggregator = FreePIE.Core.Common.Events.IEventAggregator;
@@ -36,8 +39,34 @@ namespace FreePIE.GUI.Shells
         private WindowState windowState = WindowState.Minimized;
         private bool showInTaskBar = true;
 
-        public double width = 800;
-        public double height = 600;
+        public int width = 1280;
+        public int height = 720;
+        public int Width
+        {
+            get { return width; }
+            set
+            {
+                if (value != width)
+                {
+                    width = value;
+                    NotifyOfPropertyChange(() => Width);
+                }
+            }
+        }
+
+        public int Height
+        {
+            get { return height; }
+            set
+            {
+                if (value != height)
+                {
+                    height = value;
+                    NotifyOfPropertyChange(() => Height);
+                }
+            }
+        }
+
 
         public MainShellViewModel(IResultFactory resultFactory,
                                   IEventAggregator eventAggregator,
@@ -50,6 +79,7 @@ namespace FreePIE.GUI.Shells
                                   IPaths paths,
                                   IParser parser,
                                   IPortable portable
+                                  
             )
             : base(resultFactory)
         {
@@ -88,28 +118,11 @@ namespace FreePIE.GUI.Shells
             parser.ParseAndExecute();
             eventAggregator.Publish(new StartedEvent());
 
-            // load widow width and height from an external file
-            var windowSizePath = paths.GetDataPath("windowSize.config");
-            if (fileSystem.Exists(windowSizePath))
-            {
-                var size = fileSystem.ReadAllText(windowSizePath);
-                var sizes = size.Split(',');
-                if (sizes.Length == 2)
-                {
-                    if (double.TryParse(sizes[0], out var w))
-                        Width = w;
-
-                    if (double.TryParse(sizes[1], out var h))
-                    {
-                        Height = h;
-                    }
-                }
-            }
-            else
-            {
-                Width = 800;
-                Height = 600;
-            }
+            Width = settingsManager.Settings.Width;
+            Height = settingsManager.Settings.Height;
+            
+            
+            Menu.OpenMostRecentScript();
         }
 
         private void InitDocking()
@@ -211,28 +224,6 @@ namespace FreePIE.GUI.Shells
             }
         }
 
-        public double Width
-        {
-            get { return width; }
-            set
-            {
-                if (value == width) return;
-                width = value;
-                NotifyOfPropertyChange(() => Width);
-            }
-        }
-
-        public double Height
-        {
-            get { return height; }
-            set
-            {
-                if (value == height) return;
-                height = value;
-                NotifyOfPropertyChange(() => Height);
-            }
-        }
-
         protected override IEnumerable<IResult> CanClose()
         {
             var handleDirtyResults = Scripts.SelectMany(HandleScriptClosing);
@@ -264,21 +255,14 @@ namespace FreePIE.GUI.Shells
 
         public void Handle(ExitingEvent message)
         {
+
+            settingsManager.Settings.Width = Width;
+            settingsManager.Settings.Height = Height;
+
+            settingsManager.Settings.OpenDocuments = Scripts.Where(_ => _.FilePath != null).Select(_ =>  _.FilePath).ToList();
             persistanceManager.Save();
             var layoutSerializer = new XmlLayoutSerializer(DockingManager);
             layoutSerializer.Serialize(paths.GetDataPath(dockingConfig));
-
-            // save window width and height to an external file for loading later
-
-            var windowSizePath = paths.GetDataPath("windowSize.config");
-            if (fileSystem.Exists(windowSizePath))
-            {
-                fileSystem.Delete(windowSizePath);
-            }
-            fileSystem.WriteAllText(windowSizePath, string.Format("{0},{1}", Width, Height));
-            
-
-
         }
 
         void Core.Common.Events.IHandle<SaveSettingsEvent>.Handle(SaveSettingsEvent message)

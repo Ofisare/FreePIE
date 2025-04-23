@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace FreePIE.Core.Model
 {
+
     public class Settings
     {
         public List<Curve> Curves { get; set; }
@@ -10,6 +11,12 @@ namespace FreePIE.Core.Model
         public bool MinimizeToTray { get; set; }
 
         public List<string> RecentScripts { get; set; }
+
+        public List<string> OpenDocuments { get; set; } = new List<string>();
+
+        public int Width { get; set; } = 1280;
+
+        public int Height { get; set; } = 720;
 
         public Settings()
         {

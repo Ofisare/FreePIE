@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Xml;
+
 using FreePIE.Core.Common.Extensions;
 using FreePIE.Core.Contracts;
 using FreePIE.Core.Model;
@@ -30,7 +32,9 @@ namespace FreePIE.Core.Persistence
             else
             {
                 var serializer = new DataContractSerializer(typeof(Settings));
-                using(var stream = new FileStream(path, FileMode.Open))
+                
+
+                using (var stream = new FileStream(path, FileMode.Open))
                 {
                     try
                     {
@@ -57,9 +61,25 @@ namespace FreePIE.Core.Persistence
         public void Save()
         {
             var serializer = new DataContractSerializer(typeof(Settings));
-            using (var stream = new FileStream(paths.GetDataPath(filename), FileMode.Create))
+            var xmlWriterSettings = new XmlWriterSettings { Indent = true };
+
+            string backup = null;
+            if (File.Exists(paths.GetDataPath(filename)))
+                backup = File.ReadAllText(paths.GetDataPath(filename));
+            try
             {
-                serializer.WriteObject(stream, Settings);
+                using (var stream = new FileStream(paths.GetDataPath(filename), FileMode.Create))
+                {
+                    using (var w = XmlWriter.Create(stream, xmlWriterSettings))
+                        serializer.WriteObject(w, Settings);
+                }
+            }
+            catch
+            {
+                if (backup != null)
+                {
+                    File.WriteAllText(paths.GetDataPath(filename), backup);
+                }
             }
         }
 
@@ -86,6 +106,23 @@ namespace FreePIE.Core.Persistence
                 .Where(ps => !string.IsNullOrEmpty(ps.HelpFile))
                 .OrderBy(ps => ps.FriendlyName)
                 .ToList();
+        }
+
+        public void SaveAsFormattedXml()
+        {
+            var path = paths.GetDataPath(filename);
+            var settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "  ",
+                NewLineOnAttributes = false
+            };
+
+            using (var writer = XmlWriter.Create(path, settings))
+            {
+                var serializer = new DataContractSerializer(typeof(Settings));
+                serializer.WriteObject(writer, Settings);
+            }
         }
 
         public Settings Settings { get; private set; }

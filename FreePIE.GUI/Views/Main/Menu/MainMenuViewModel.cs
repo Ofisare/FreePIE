@@ -55,6 +55,8 @@ namespace FreePIE.GUI.Views.Main.Menu
             this.settingsManager = settings;
 
             RecentScripts = new BindableCollection<RecentFileViewModel>(ListRecentFiles());
+
+            
         }
 
         private PanelViewModel activeDocument;
@@ -135,9 +137,23 @@ namespace FreePIE.GUI.Views.Main.Menu
             CreateScriptViewModel(model.File);
         }
 
+        public void OpenMostRecentScript()
+        {
+            //if (CanOpenRecentScript)
+            //{
+            //    var mostRecent = RecentScripts.First();
+            //    CreateScriptViewModel(mostRecent.File);
+            //}
+            foreach(var filePath in settingsManager.Settings.OpenDocuments)
+            {
+                CreateScriptViewModel(filePath);
+            }
+        }
+
         private void AddRecentScript(string filePath)
         {
             settingsManager.Settings.AddRecentScript(filePath);
+            
             RecentScripts.Clear();
             RecentScripts.AddRange(ListRecentFiles());
             NotifyOfPropertyChange(() => CanOpenRecentScript);

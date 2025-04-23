@@ -6,7 +6,7 @@
         xmlns:avalonDock1="clr-namespace:FreePIE.GUI.Common.AvalonDock"
         Title="FreePIE" Background="{DynamicResource WindowBackgroundBrush}" 
         WindowState="{Binding WindowState, Mode = TwoWay}" 
-        ShowInTaskbar="{Binding ShowInTaskBar, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}">
+        ShowInTaskbar="{Binding ShowInTaskBar, Mode=TwoWay}" Width="{Binding Width, Mode=TwoWay}" Height="{Binding Height, Mode=TwoWay}"  >
     <Window.Resources>
         <xcad:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
     </Window.Resources>
