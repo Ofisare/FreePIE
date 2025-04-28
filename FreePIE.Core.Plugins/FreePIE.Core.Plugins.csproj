@@ -108,6 +108,9 @@
     <Compile Include="MouseKeyboard\MouseKeyIO.cs" />
     <Compile Include="MouseKeyboard\MousePlugin.cs" />
     <Compile Include="OpenTrackPlugin.cs" />
+    <Compile Include="Telemetry\MmfTelemetry.cs" />
+    <Compile Include="Telemetry\TelemetryBase.cs" />
+    <Compile Include="Telemetry\UdpTelemetry.cs" />
     <Compile Include="vigem\DualShockOutputPlugin.cs" />
     <Compile Include="vigem\ViGemPluginBase.cs" />
     <Compile Include="vigem\XboxOutputPlugin.cs" />
