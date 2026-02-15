@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using Caliburn.Micro;
 using FreePIE.Core.Services;
@@ -57,6 +58,7 @@ namespace FreePIE.GUI.Bootstrap
 	        Coroutine.BeginExecute(kernel
                 .Get<SettingsLoaderViewModel>()
                 .Load(OnSettingsLoaded)
+                .ToList()
                 .GetEnumerator());
         }
 
